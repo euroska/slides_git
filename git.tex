@@ -1,0 +1,284 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage{default}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+% \usepackage[crop=off]{auto-pst-pdf}
+
+\title{Advenced GIT}
+\author{Martin Miksanik}
+\subject{Advanced git}
+\date{\today}
+
+\usetheme{Bergen}
+\usecolortheme{beetle}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \vspace{1cm}
+  Mozno zaroven testovat na: $http://gitlab.mmik.cz$
+\end{frame}
+
+
+\frame{\tableofcontents}
+
+\section{Úvod}
+\begin{frame}
+  \frametitle{Úvod}
+  \begin{itemize}
+    \item Proc se to ucit, kdyz to jde naklikat?
+    \item Obří množství funkcí/parametru
+    \item Široké možnosti konfigurace - diff, whitespace atd.
+    \item Jednoduše nastavitelné hooky
+    \item Snadna CI
+    
+    \item https://git-scm.com/
+    \item git help    
+  \end{itemize}
+\end{frame}
+
+\section{Základní operace}
+\begin{frame}
+  \frametitle{Základní operace}
+  \begin{itemize}
+    \item Clone / Fetch
+    \item Add / rm
+    \item Commit / Reset
+    \item Push / Pull
+    \item Checkout
+    \item Branch 
+    \item Merge / Rebase
+    \item Revert
+    \item Stash
+    \item ...
+  \end{itemize}
+  
+  \begin{itemize}
+   \item Bare git repozitář
+   \item Repository s index a WORK\_TREE
+  \end{itemize}
+\end{frame}
+
+\subsection{Clone / Fetch}
+\begin{frame}
+  \frametitle{Clone / Fetch}
+  \begin{block}{Clone}
+    git clone https://github.com/euroska/slides\_git.git
+    \begin{itemize}
+     \item Stáhne vzdálené repository (fetch)
+     \item Nastaví remote origin
+     \item Nastavi index (branche, HEAD)
+    \end{itemize}
+  \end{block}  
+  \begin{block}{Fetch}
+    git fetch origin -a
+    \begin{itemize}
+      \item Stahne vsechny zmeny ze vzdalenych adresaru, ale neaplikuje je
+      \item Vzdalene repozitare je mozno vyuzivat (git rebase origin/master)
+    \end{itemize}   
+  \end{block}
+\end{frame}
+
+\subsection{Prace se stromem}
+\begin{frame}
+  \frametitle{Strom}
+  \begin{figure}
+    \include{structure}
+  \end{figure} 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Prace se stromem}
+  \begin{itemize}
+   \item Co je radek?
+   \item Co je soubor?
+   \item Co je slozka?
+   \item Co je commit?
+   \item Co je index?
+   \item Co je branch?
+   \item Co je tag?
+   \item Co je reference?
+  \end{itemize}
+\end{frame}
+
+\subsection{Add / RM}
+\begin{frame}
+ \frametitle{Add / RM}
+  \begin{block}{Add}
+   \begin{itemize}
+    \item Podepise zmeny a prida je k commitu (soft)
+    \item Lzou pridat i soubory z ignore s parametrem --force (nastaveni atd.)
+   \end{itemize}
+  \end{block}
+   
+  \begin{block}{RM} 
+   \begin{itemize}
+    \item Odebere soubory z repozitare
+    \item Lze odebrat mekce s parametrem --cached
+   \end{itemize}
+  \end{block}
+\end{frame}
+ 
+\subsection{Commit / Reset}
+\begin{frame}
+ \frametitle{Commit / Reset}
+  \begin{block}{Commit}
+   Podepise zmeny, prida zpravu a informace o uzivateli
+  \end{block}
+
+  \begin{block}{Reset}
+    Odebere soubor/zmenu ze zmen k commitnutí, případně ruší celé commity
+    \begin{itemize}
+      \item Soft
+      \item Hard
+      \item HEAD\textasciitilde{}N
+      \item Rychly nastroj pro squash(ovani) commitu
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\subsection{Fast-forward}
+\begin{frame}
+ \frametitle{Fast-forward}
+ \begin{itemize}
+  \item Nahraje po sobe jdouci zmeny (push/pull)
+  \item Pouziva se hlavne tam, kde se automaticky provadi zmeny
+  \item Zjednodusuje prehlednost zmen (mene commitu)
+ \end{itemize}
+\end{frame}
+
+
+\subsection{Push / Pull}
+\begin{frame}
+ \frametitle{Push / Pull}
+  Stáhne/nahraje změny z vzdáleného repozitáře
+  
+  \begin{itemize}
+   \item Metadata
+   \item Stream objektu
+   \item Lisi se prakticky jen, jake se volaji hooky
+  \end{itemize}
+\end{frame}
+
+\subsection{Rebase vs Merge}
+\begin{frame}
+  \frametitle{Rebase vs Merge} 
+  \begin{itemize}
+    \item Lisi se v poradi aplikovani mergu
+    \item Stejne co se tyce vysledneho stavu zdrojovych kodu
+    \item Vyrazne jine pro code review
+    \item Velky rozdil pri automatickych/schvalovanych push/pull/merge requestech
+  \end{itemize}
+\end{frame}
+
+\subsection{Stash}
+\begin{frame}
+ \frametitle{Stash}
+ \begin{itemize}
+  \item Pred pull / push jeste nez se chce udelat opravdovy commit
+  \item Pokud se potrebuje aktualizovat, jsou rozpracovane zmeny ktere se nebudou commitovat (gitlab)
+ \end{itemize}
+\end{frame}
+
+\subsection{Adresovani}
+\begin{frame}
+ \frametitle{Adresovani}
+ \begin{itemize}
+  \item refs/heads/master
+  \item refs/tags/V0.0.1
+  \item refs/remotes/origin/master
+ \end{itemize}
+\end{frame}
+
+
+\section{Kooperace}
+\begin{frame}
+ \frametitle{Zakladni domluva - diktat}
+ \begin{itemize}
+  \item Jeden tomu veli, protoze vice lidi se uz nemusi shodnout :)
+  \item Kde se spravujou ukoly, reference z commitu, closes atd.
+  \item Problem s case insenzitive soubory - aneb prokliname windows
+  \item Kdo muze mergovat do masteru - merge/push/pull requesty, kazdy sam, atd.
+  \item Politika vytvareni/mazani branchu
+  \item Fork a k cemu je dobry
+  \item Co na to code-review
+ \end{itemize}
+\end{frame}
+
+\subsection{Mere/pull/push requesty}
+\begin{frame}
+ \frametitle{Mere/pull/push requesty}
+ \begin{itemize}
+  \item Jedna se prakticky o tutez vec, jen je ji mozno vyresit N moznostma.
+  \item FastForward vs Merge
+  \item Co nejmensi pocet commitu, idealne squash(nute) do jednoho komentare - generovani changelogu
+  \item Co nejmene primergovani, idealne jen rebasovat master
+  \item Automatika nemuze zafungovat vzdy - rebase, merge, push --force
+ \end{itemize}
+\end{frame}
+
+\subsection{Drobneni projektu}
+\begin{frame}
+ \frametitle{Drobneni projektu}
+ \begin{itemize}
+  \item Pouzivat kompozery, instalatory, stahovatory atd. (npm, bower, composer, pip, galaxy atd.)
+  \item Pozor na git submodule
+  \item Jednotlive modulu jde pouzivat na vice mistech a netreba kopirovat kod
+ \end{itemize}
+\end{frame}
+
+\section{CI}
+\begin{frame}
+ \frametitle{CI}
+ \begin{itemize}
+  \item GitLab-Ci - test
+  \item Jenkins
+  \item TeamCity
+  \item mnoho dalsich
+ \end{itemize}
+\end{frame}
+
+\subsection{Gitlab}
+\begin{frame}
+ \frametitle{GitLab}
+ https://docs.gitlab.com/ce/ci/yaml/README.html
+\begin{block}{.gitlab-ci.yml}
+~~stages:\\
+~~~~-~test\\
+~~job1:\\
+~~~~stage:~test\\
+~~~~script:\\
+~~~~~~- python~test.py\\
+~~~~~~- python~-m~unittest
+\end{block}
+\vspace{0.5cm}
+
+ Testovaci projekt na: http://gitlab.mmik.cz/test/python
+ 
+ \begin{itemize}
+  \item Variables
+  \item Environments
+  \item Runners
+ \end{itemize}
+\end{frame}
+
+
+
+\section{Zaver}
+\begin{frame}
+ \frametitle{Zaver}
+ Gitlab neni jediny a neni to jedina uzitecna sluzba:
+ 
+ \begin{itemize}
+  \item Gitosis
+  \item GitHub
+  \item Jira stash
+ \end{itemize} 
+ Stejne ale vetsina veci jde resit i jednoduse pres zakladni git server 
+\end{frame}
+
+\end{document}
